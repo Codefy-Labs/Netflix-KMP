@@ -1,8 +1,10 @@
 package com.codefylabs.netflix.models
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-data class MovieDetailsDto(
+@Serializable
+data class MovieDetails(
     val id: Long,
     val adult: Boolean,
     @SerialName("backdrop_path")
@@ -25,6 +27,7 @@ data class MovieDetailsDto(
     val voteCount: Int
 )
 
+@Serializable
 data class Genres(
     val id: Int,
     val name: String

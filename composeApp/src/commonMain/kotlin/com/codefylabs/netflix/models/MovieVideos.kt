@@ -1,10 +1,14 @@
 package com.codefylabs.netflix.models
 
-data class MoviesVideosDto(
-    val results: List<MovieVideoItemDto>
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class MoviesVideos(
+    val results: List<MovieVideoItem>
 )
 
-data class MovieVideoItemDto(
+@Serializable
+data class MovieVideoItem(
     val key: String,
     val name: String,
     val size: Int,

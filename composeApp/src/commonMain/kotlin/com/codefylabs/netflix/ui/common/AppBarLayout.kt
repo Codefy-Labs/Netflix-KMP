@@ -30,6 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.ArrowLeft
 import netflix_kmp.composeapp.generated.resources.Res
 import netflix_kmp.composeapp.generated.resources.ic_netflix_logo
 import netflix_kmp.composeapp.generated.resources.ic_profile
@@ -83,7 +85,7 @@ fun AppBar(
         ) {
             if (showBack) {
                 Icon(
-                    imageVector = Icons.Outlined.ArrowBack,
+                    imageVector = FeatherIcons.ArrowLeft,
                     contentDescription = "Back",
                     modifier = Modifier.clickable { upPress() }
                 )

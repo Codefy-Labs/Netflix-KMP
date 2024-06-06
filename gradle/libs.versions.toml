@@ -6,6 +6,7 @@ agp = "8.2.2"
 androidx-activityCompose = "1.9.0"
 androidx-uiTest = "1.6.7"
 coil = "3.0.0-alpha06"
+lifecycleViewmodelCompose = "2.8.0"
 napier = "2.7.1"
 buildConfig = "4.1.1"
 kotlinx-coroutines = "1.9.0-RC"
@@ -15,6 +16,7 @@ kotlinx-serialization = "1.7.0-RC"
 kotlinx-datetime = "0.6.0"
 navigationCompose = "2.7.0-alpha07"
 koin="1.1.0"
+constraintlayout = "2.1.4"
 
 [libraries]
 
@@ -23,6 +25,7 @@ androidx-testManifest = { module = "androidx.compose.ui:ui-test-manifest", versi
 androidx-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidx-uiTest" }
 coil = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor", version.ref = "coil" }
+lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
@@ -41,6 +44,7 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 koin-compose = {module="io.insert-koin:koin-compose", version.ref = "koin"}
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
 [bundles]
 ktor = ["ktor-client-core", "ktor-client-content-negotiation"]

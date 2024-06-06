@@ -2,6 +2,7 @@ package com.codefylabs.netflix
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -62,8 +63,8 @@ internal fun App() = AppTheme {
             AnimatedVisibility(
                 showSplash,
                 modifier = Modifier.fillMaxSize(),
-                enter = fadeIn() + scaleIn(initialScale = 0.9f),
-                exit = fadeOut() + scaleOut(targetScale = 4f),
+                enter = fadeIn(tween(1200)) + scaleIn(initialScale = 0.9f, animationSpec = tween(1200)),
+                exit = fadeOut(tween(1200)) + scaleOut(targetScale = 4f, animationSpec = tween(1200)),
             ) {
                 SplashScreen {
                     showSplash = false

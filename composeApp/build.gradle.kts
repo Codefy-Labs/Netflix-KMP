@@ -18,8 +18,8 @@ kotlin {
         compilations.all {
             compileTaskProvider {
                 compilerOptions {
-                    jvmTarget.set(JvmTarget.JVM_1_8)
-                    freeCompilerArgs.add("-Xjdk-release=${JavaVersion.VERSION_1_8}")
+                    jvmTarget.set(JvmTarget.JVM_11)
+                    freeCompilerArgs.add("-Xjdk-release=${JavaVersion.VERSION_11}")
                 }
             }
         }
@@ -71,6 +71,9 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.kotlin.serialization)
             implementation(libs.koin.compose)
+
+            implementation(libs.lifecycle.viewmodel.compose)
+            implementation("tech.annexflow.compose:constraintlayout-compose-multiplatform:0.4.0")
         }
 
         commonTest.dependencies {
@@ -130,8 +133,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     buildFeatures {
         //enables a Compose tooling support in the AndroidStudio
@@ -139,9 +142,6 @@ android {
     }
 }
 
-compose.experimental {
-    web.application {}
-}
 
 buildConfig {
     // BuildConfig configuration here.
