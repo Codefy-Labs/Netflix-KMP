@@ -18,9 +18,9 @@ data class Movie(
     val id: Long,
     val adult: Boolean,
     @SerialName("backdrop_path")
-    val backDropPath: String,
+    val backDropPath: String?,
     @SerialName("poster_path")
-    val posterPath: String,
+    val posterPath: String?,
     @SerialName("genre_ids")
     val genreIds: List<Int>,
     @SerialName("original_language")
@@ -36,27 +36,8 @@ data class Movie(
     @SerialName("vote_count")
     val voteCount: Int,
 ) {
-
-    val backDropUrl = MoviesApi.IMAGE_BASE_URL_W500 + backDropPath
-    val posterUrl = MoviesApi.IMAGE_BASE_URL_W500 + posterPath
+    val backDropUrl = MoviesApi.IMAGE_BASE_URL_W500 + (backDropPath ?: posterPath)
+    val posterUrl = MoviesApi.IMAGE_BASE_URL_W500 + (posterPath ?: backDropPath)
 }
 
-@Serializable
-data class SimilarMovies(
-    val results: List<SimilarMovie>,
-)
 
-@Serializable
-data class SimilarMovie(
-    val id: Int,
-    val adult: Boolean,
-    @SerialName("backdrop_path")
-    val backDropPath: String,
-    @SerialName("poster_path")
-    val posterPath: String,
-    @SerialName("original_language")
-    val originalLanguage: String,
-    val title: String,
-    val overview: String,
-    val video: Boolean,
-)

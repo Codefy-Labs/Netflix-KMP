@@ -3,17 +3,13 @@ package com.codefylabs.netflix.network
 import com.codefylabs.netflix.models.MovieDetails
 import com.codefylabs.netflix.models.Movies
 import com.codefylabs.netflix.models.MoviesVideos
-import com.codefylabs.netflix.models.SimilarMovies
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
-import io.ktor.client.request.parameter
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 
 
 class NetworkRepository(private val client: HttpClient) {
@@ -83,7 +79,7 @@ class NetworkRepository(private val client: HttpClient) {
             }.body()
         }
 
-    suspend fun getSimilarMovies(movieId: Long): Result<SimilarMovies> =
+    suspend fun getSimilarMovies(movieId: Long): Result<Movies> =
         makeRequest {
             client.get(
                 MoviesApi.BASE_URL.plus(

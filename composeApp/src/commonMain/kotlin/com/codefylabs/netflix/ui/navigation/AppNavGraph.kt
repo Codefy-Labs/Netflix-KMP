@@ -1,6 +1,11 @@
 package com.codefylabs.netflix.ui.navigation
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,6 +25,8 @@ import com.codefylabs.netflix.ui.features.movie_detail.MovieDetailScreen
 import com.codefylabs.netflix.ui.features.play_something.PlaySomethingScreen
 import com.codefylabs.netflix.ui.navigation.MainDestinations.DASHBOARD_ROUTE
 import com.codefylabs.netflix.ui.navigation.MainDestinations.MOVIE_ID_KEY
+import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 
 object MainDestinations {
@@ -28,17 +35,18 @@ object MainDestinations {
     const val MOVIE_ID_KEY = "movieId"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalAnimationApi
 @Composable
 fun AppNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+    mainActions: MainActions = MainActions(navController),
     startDestination: String = DASHBOARD_ROUTE,
 ) {
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
+        modifier = Modifier.fillMaxSize()
     ) {
 
         navigation(
@@ -46,7 +54,7 @@ fun AppNavGraph(
             startDestination = DashboardSections.HOME.route
         ) {
             composable(DashboardSections.HOME.route) {
-                HomeScreen()
+                HomeScreen(navigateToMovieDetail = mainActions.openMovieDetails)
             }
             composable(DashboardSections.PLAY_SOMETHING.route) {
                 PlaySomethingScreen()
@@ -61,38 +69,50 @@ fun AppNavGraph(
 
         composable(
             route = "${MainDestinations.MOVIE_DETAIL_ROUTE}/{$MOVIE_ID_KEY}",
-            arguments = listOf(navArgument(MOVIE_ID_KEY) { type = NavType.LongType })
+            arguments = listOf(navArgument(MOVIE_ID_KEY) { type = NavType.LongType }),
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { fullWidth -> fullWidth },
+                    animationSpec = tween(durationMillis = 600, easing = FastOutSlowInEasing)
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { fullWidth -> -fullWidth },
+                    animationSpec = tween(durationMillis = 600, easing = FastOutSlowInEasing)
+                )
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { fullWidth -> -fullWidth },
+                    animationSpec = tween(durationMillis = 600, easing = FastOutSlowInEasing)
+                )
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { fullWidth -> fullWidth },
+                    animationSpec = tween(durationMillis = 600, easing = FastOutSlowInEasing)
+                )
+            }
         ) { from: NavBackStackEntry ->
             val arguments = requireNotNull(from.arguments)
             val movieId = arguments.getLong(MOVIE_ID_KEY)
 
-            MovieDetailScreen()
+            MovieDetailScreen(upPress = {
+                navController.navigateUp()
+            }, viewModel = koinInject(parameters = { parametersOf(movieId) }))
         }
     }
 }
 
-/**
- * Models the navigation actions in the app.
- */
+
 class MainActions(
     navController: NavHostController,
-    updateAppBarVisibility: (Boolean) -> Unit
 ) {
     val openMovieDetails = { movieId: Long ->
-        updateAppBarVisibility(false)
         navController.navigate("${MainDestinations.MOVIE_DETAIL_ROUTE}/$movieId") {
-            // Pop up to the start destination of the graph to avoid building up a large
-            // stack of destinations on the back stack as users select items
-            popUpTo(navController.graph.startDestinationRoute ?: DASHBOARD_ROUTE)
             // Avoid multiple copies of the same destination when re-selecting the same item
             launchSingleTop = true
-        }
-    }
-    val upPress: (rom: NavBackStackEntry) -> Unit = { from: NavBackStackEntry ->
-        // In order to discard duplicated navigation events, we check the Lifecycle
-        if (from.lifecycleIsResumed()) {
-            updateAppBarVisibility(true)
-            navController.navigateUp()
         }
     }
 }
@@ -103,3 +123,4 @@ class MainActions(
  * This is used to de-duplicate navigation events.
  */
 fun NavBackStackEntry.lifecycleIsResumed() = this.lifecycle.currentState == Lifecycle.State.RESUMED
+

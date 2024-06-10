@@ -74,6 +74,7 @@ kotlin {
 
             implementation(libs.lifecycle.viewmodel.compose)
             implementation("tech.annexflow.compose:constraintlayout-compose-multiplatform:0.4.0")
+            implementation("io.github.alexzhirkevich:compottie:1.1.2")
         }
 
         commonTest.dependencies {
@@ -88,6 +89,14 @@ kotlin {
             implementation(libs.androidx.activityCompose)
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.ktor.client.android)
+
+
+//            The VideoPlayer for Android is using ExoPlayer internally through the VideoView wrapped inside the AndroidView composable, allowing us to play videos in compose multiplatform.
+            implementation("androidx.media3:media3-exoplayer:1.3.1")
+            implementation("androidx.media3:media3-exoplayer-dash:1.3.1")
+            implementation("androidx.media3:media3-ui:1.3.1")
+
+
         }
 
         jsMain.dependencies {

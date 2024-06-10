@@ -3,16 +3,17 @@ package com.codefylabs.netflix.ui.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codefylabs.netflix.models.Movie
+import com.codefylabs.netflix.models.Movies
 import com.codefylabs.netflix.network.MoviesApi
 import com.codefylabs.netflix.network.NetworkRepository
 import com.codefylabs.netflix.network.Result
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-
 
 class HomeViewModel(private val repository: NetworkRepository) : ViewModel() {
 
@@ -24,63 +25,37 @@ class HomeViewModel(private val repository: NetworkRepository) : ViewModel() {
     }
 
     private fun fetchMovies() {
-        Napier.e("FetchedMovies")
         viewModelScope.launch {
             _uiState.value = HomeViewState.Loading
 
-            val topRatedMoviesDeferred =
-                async { repository.getTopRatedMovies(MoviesApi.LANG_ENG, 1) }
-            val nowPlayingMoviesDeferred =
-                async { repository.getNowPlayingMovies(MoviesApi.LANG_ENG, 1) }
-            val popularMoviesDeferred = async { repository.getPopularMovies(MoviesApi.LANG_ENG, 1) }
+            try {
+                val (topRatedMoviesResult, nowPlayingMoviesResult, popularMoviesResult) = awaitAll(
+                    async { repository.getTopRatedMovies(MoviesApi.LANG_ENG, 1) },
+                    async { repository.getNowPlayingMovies(MoviesApi.LANG_ENG, 1) },
+                    async { repository.getPopularMovies(MoviesApi.LANG_ENG, 1) }
+                )
 
-            val topRatedMoviesResult = topRatedMoviesDeferred.await()
-            val nowPlayingMoviesResult = nowPlayingMoviesDeferred.await()
-            val popularMoviesResult = popularMoviesDeferred.await()
+                val topRatedMovies = handleResult(topRatedMoviesResult)
+                val nowPlayingMovies = handleResult(nowPlayingMoviesResult).reversed()
+                val popularMovies = handleResult(popularMoviesResult)
 
-            val topRatedMovies = when (topRatedMoviesResult) {
-                is Result.Failure -> {
-                    Napier.e(topRatedMoviesResult.exception.message.toString())
-                    topRatedMoviesResult.exception.printStackTrace()
-                    emptyList()
-                }
-
-                is Result.Success -> topRatedMoviesResult.data.results
+                _uiState.value = HomeViewState.Dashboard(
+                    topRatedMovies = topRatedMovies,
+                    trendingMovies = nowPlayingMovies,
+                    popularMovies = popularMovies
+                )
+            } catch (e: Exception) {
+                Napier.e("Error fetching movies: ${e.message}")
+                e.printStackTrace()
+                _uiState.value = HomeViewState.Error("Failed to fetch movies.")
             }
+        }
+    }
 
-            val nowPlayingMovies = when (nowPlayingMoviesResult) {
-                is Result.Failure -> {
-                    Napier.e(nowPlayingMoviesResult.exception.message.toString())
-                    nowPlayingMoviesResult.exception.printStackTrace()
-                    emptyList()
-                }
-
-                is Result.Success -> nowPlayingMoviesResult.data.results
-            }
-
-            val popularMovies = when (popularMoviesResult) {
-                is Result.Failure -> {
-                    Napier.e(popularMoviesResult.exception.message.toString())
-                    popularMoviesResult.exception.printStackTrace()
-                    emptyList()
-                }
-
-                is Result.Success -> popularMoviesResult.data.results
-            }
-
-
-
-            Napier.i("TopRatedMovies -> $topRatedMovies")
-            Napier.i("\n\n")
-            Napier.i("NowPlayingMovies -> $nowPlayingMovies")
-            Napier.i("\n\n")
-            Napier.i("PopularMovies -> $popularMovies")
-
-            _uiState.value = HomeViewState.Dashboard(
-                topRatedMovies = topRatedMovies,
-                trendingMovies = nowPlayingMovies,
-                popularMovies = popularMovies
-            )
+    private fun handleResult(result: Result<Movies>): List<Movie> {
+        return when (result) {
+            is Result.Failure -> throw result.exception
+            is Result.Success -> result.data.results
         }
     }
 }
@@ -92,6 +67,8 @@ sealed interface HomeViewState {
         val popularMovies: List<Movie> = emptyList(),
         val trendingMovies: List<Movie> = emptyList(),
     ) : HomeViewState
+
+    data class Error(val message: String) : HomeViewState
 
     data object Loading : HomeViewState
 }

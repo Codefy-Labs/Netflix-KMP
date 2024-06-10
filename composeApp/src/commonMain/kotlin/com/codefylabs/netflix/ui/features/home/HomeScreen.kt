@@ -46,14 +46,13 @@ import org.koin.compose.koinInject
 
 @Composable
 fun HomeScreen(
+    navigateToMovieDetail : (Long) -> Unit,
     scrollState: LazyListState = rememberLazyListState(),
     viewModel: HomeViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState(HomeViewState.Loading)
 
-    NetflixSurface(
-        color = MaterialTheme.colorScheme.background,
-    ) {
+    NetflixSurface(color = MaterialTheme.colorScheme.background) {
         LazyColumn(
             state = scrollState,
             modifier = Modifier.fillMaxSize(),
@@ -65,9 +64,7 @@ fun HomeScreen(
                     item {
                         state.trendingMovies.firstOrNull()?.let { movie ->
                             TopHighlightedMovie(
-                                onMovieClick = {
-
-                                },
+                                onMovieClick = navigateToMovieDetail,
                                 topMovie = movie
                             )
                         }
@@ -75,27 +72,21 @@ fun HomeScreen(
                         Spacer(modifier = Modifier.height(20.dp))
 
                         TopRatedMoviesSection(
-                            onMovieClick = { movieId ->
-
-                            },
+                            onMovieClick = navigateToMovieDetail,
                             movies = state.topRatedMovies
                         )
 
                         Spacer(modifier = Modifier.height(20.dp))
 
                         TrendingNowSection(
-                            onMovieClick = { movieId ->
-
-                            },
+                            onMovieClick = navigateToMovieDetail,
                             movies = state.trendingMovies
                         )
 
                         Spacer(modifier = Modifier.height(20.dp))
 
                         PopularOnNetflixSection(
-                            onMovieClick = { movieId ->
-
-                            },
+                            onMovieClick = navigateToMovieDetail,
                             movies = state.popularMovies
                         )
 
@@ -104,6 +95,11 @@ fun HomeScreen(
                 }
 
                 HomeViewState.Loading -> {
+
+                }
+
+                is HomeViewState.Error -> {
+
 
                 }
             }

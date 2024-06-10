@@ -16,6 +16,7 @@ import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -73,7 +74,7 @@ fun NetflixTopAppBar(
 @Composable
 fun AppBar(
     showBack: Boolean = false,
-    upPress: () -> Unit = {}
+    upPress: () -> Unit = {},
 ) {
     Row(
         modifier = Modifier.padding(start = 10.dp)
@@ -147,7 +148,7 @@ private fun MenuBar() {
 @Composable
 private fun TopAppBarMenuItem(
     text: String,
-    modifier: Modifier
+    modifier: Modifier,
 ) {
     Text(
         text = text,
@@ -170,23 +171,22 @@ private fun TopAppBarMenuItem(
 @Composable
 fun MovieDetailAppBar(
     modifier: Modifier = Modifier,
-    upPress: () -> Unit
+    upPress: () -> Unit,
 ) {
     NetflixSurface(
-        modifier = modifier
-            .padding(top = 30.dp)
-            .height(MovieDetailTopBarHeight),
-        color = Color.Black.copy(alpha = 0.5f)
+        modifier = modifier,
+        color = Color.Transparent
     ) {
         TopAppBar(
-            modifier = modifier
-                .height(TopBarHeight),
+            modifier = modifier,
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.Transparent
             ),
             title = {
-                Column {
-                    AppBar(showBack = true, upPress = upPress)
+
+            }, navigationIcon = {
+                IconButton(onClick = upPress) {
+                    Icon(imageVector = FeatherIcons.ArrowLeft, contentDescription = "")
                 }
             }
         )
