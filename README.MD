@@ -5,7 +5,7 @@ Welcome to the **Netflix Clone** project by **CodefyLabs**! This repository show
 | Platform | Preview |
 | -------- | ------- |
 | Android  | ![Android Demo](url_to_your_android_gif) |
-| iOS      | ![iOS Demo](url_to_your_ios_gif) |
+| iOS      | ![iOS Demo](https://github.com/Codefy-Labs/Netflix-KMP/assets/171213082/d07b5787-1545-4a00-8410-f4b23c92eb86) |
 
 
 ## 🚀 Features
