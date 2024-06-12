@@ -2,7 +2,6 @@
 
 Welcome to the **Netflix Clone** project by **CodefyLabs**! This repository showcases the power of **Compose Multiplatform** by creating a sleek, Netflix-like app that runs seamlessly on both Android and iOS.
 
-![Netflix Clone](path_to_your_image.png)
 
 ## 🚀 Features
 
